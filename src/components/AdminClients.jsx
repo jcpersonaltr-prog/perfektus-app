@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { signupClient } from "../lib/signupClient";
+import Progression from "./Progression";
 
 const inputStyle = {
   width: "100%",
@@ -162,6 +163,9 @@ export default function AdminClients() {
             )}
           </div></div>
         )}
+
+        <div className="eyebrow" style={{ margin: "16px 0 8px" }}>Progressão</div>
+        <Progression clientId={selected.id} />
 
         <div className="eyebrow" style={{ margin: "16px 0 8px" }}>Últimas Sessões</div>
         {(detail?.plans ?? []).length === 0 && <p className="muted-text" style={{ fontSize: 13 }}>Sem sessões.</p>}

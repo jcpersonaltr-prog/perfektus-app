@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
 import { useAuth } from "../lib/AuthContext";
+import DailyCheckin from "../components/DailyCheckin";
+import Progression from "../components/Progression";
 
 export default function Dashboard() {
   const { session } = useAuth();
@@ -93,6 +95,11 @@ export default function Dashboard() {
             </div>
           </div>
         )}
+
+        <DailyCheckin />
+
+        <div className="eyebrow" style={{ margin: "20px 0 8px" }}>A Tua Progressão</div>
+        <Progression clientId={session?.user?.id} />
       </div>
     </div>
   );
