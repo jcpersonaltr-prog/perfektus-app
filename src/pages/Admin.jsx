@@ -3,12 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
 import { useAuth } from "../lib/AuthContext";
 import { formatPrice } from "../lib/config";
+import AdminHome from "../components/AdminHome";
+import AdminClients from "../components/AdminClients";
+import AdminPlans from "../components/AdminPlans";
 
 export default function Admin() {
   const { session } = useAuth();
   const navigate = useNavigate();
   const [isTrainer, setIsTrainer] = useState(null);
-  const [tab, setTab] = useState("payments");
+  const [tab, setTab] = useState("home");
   const [payments, setPayments] = useState([]);
   const [clients, setClients] = useState([]);
   const [busy, setBusy] = useState(null);
@@ -102,7 +105,7 @@ export default function Admin() {
 
       <div className="content">
         <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
-          {[["payments", `Pagamentos (${payments.length})`], ["clients", "Clientes"]].map(([key, label]) => (
+          {[["home", "Hoje"], ["payments", `Pag. (${payments.length})`], ["clients", "Clientes"], ["plans", "Planos"]].map(([key, label]) => (
             <button
               key={key}
               onClick={() => setTab(key)}
@@ -166,27 +169,10 @@ export default function Admin() {
           </>
         )}
 
-        {tab === "clients" && (
-          <>
-            {clients.map((c) => (
-              <div key={c.id} className="card" style={{ margin: "0 0 10px" }}>
-                <div className="card-body" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: 14 }}>
-                  <span style={{ fontSize: 14 }}>{c.full_name}</span>
-                  <span
-                    className="stamp"
-                    style={{
-                      borderColor: c.access_status === "active" ? "#8A9A5B" : c.access_status === "pending" ? "var(--alert)" : "var(--muted)",
-                      color: c.access_status === "active" ? "#8A9A5B" : c.access_status === "pending" ? "var(--alert)" : "var(--muted)",
-                    }}
-                  >
-                    {c.access_status === "active" ? "Ativo" : c.access_status === "pending" ? "Pendente" : c.access_status}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </>
-        )}
-      </div>
+        {tab === "home" && <AdminHome />}
+        {tab === "clients" && <AdminClients />}
+        {tab === "plans" && <AdminPlans />}
+</div>
     </div>
   );
 }
