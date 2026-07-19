@@ -3,8 +3,8 @@
 // ============================================================
 
 export const PAYMENT_CONFIG = {
-  mbwayNumber: "91 XXX XX XX",        // ← o teu número MB Way
-  iban: "PT50 XXXX XXXX XXXX XXXX XXXX X", // ← o teu IBAN
+  mbwayNumber: "934803502",        // ← o teu número MB Way
+  iban: "PT50 0023 0000 45840178618 94", // ← o teu IBAN
   ibanName: "João Carvalho",           // nome do titular
 };
 
@@ -16,3 +16,4 @@ export const PLANS = [
 
 export const formatPrice = (cents) =>
   (cents / 100).toLocaleString("pt-PT", { style: "currency", currency: "EUR" });
+
