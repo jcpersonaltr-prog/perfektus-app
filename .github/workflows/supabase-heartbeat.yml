@@ -1,0 +1,45 @@
+// heartbeat.mjs
+// Faz um pedido leve (SELECT) à base de dados Supabase para manter o projeto "ativo"
+// e evitar a pausa automática por inatividade (free tier).
+
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
+
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  console.error("❌ Faltam as variáveis SUPABASE_URL ou SUPABASE_ANON_KEY.");
+  process.exit(1);
+}
+
+// Ajusta "exercises" para o nome de uma tabela real e pequena do teu projeto,
+// se quiseres. Um pedido a uma tabela inexistente também conta como atividade
+// (é um request autenticado à API), mas assim fica mais "limpo" nos logs.
+const TABLE = process.env.HEARTBEAT_TABLE || "exercises";
+
+async function ping() {
+  const url = `${SUPABASE_URL}/rest/v1/${TABLE}?select=id&limit=1`;
+
+  const res = await fetch(url, {
+    method: "GET",
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+    },
+  });
+
+  const status = res.status;
+  console.log(`Ping a ${TABLE} -> status ${status}`);
+
+  // Mesmo um 200, 400 ou 404 já conta como atividade na API do Supabase,
+  // por isso não falhamos o job só porque a tabela tem outro nome.
+  if (status >= 500) {
+    console.error("⚠️ Erro do lado do servidor Supabase.");
+    process.exit(1);
+  }
+
+  console.log("✅ Heartbeat enviado com sucesso.");
+}
+
+ping().catch((err) => {
+  console.error("❌ Erro ao executar heartbeat:", err);
+  process.exit(1);
+});
